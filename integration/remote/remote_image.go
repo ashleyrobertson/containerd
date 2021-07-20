@@ -121,6 +121,8 @@ func (r *ImageService) PullImage(image *runtimeapi.ImageSpec, auth *runtimeapi.A
 	ctx, cancel := getContextWithCancel()
 	defer cancel()
 
+	klog.Errorf("Ashley Error: %v", image.Image, err)
+
 	resp, err := r.imageClient.PullImage(ctx, &runtimeapi.PullImageRequest{
 		Image:         image,
 		Auth:          auth,
