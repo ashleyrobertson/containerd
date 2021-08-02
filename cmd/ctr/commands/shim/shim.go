@@ -74,7 +74,7 @@ var Command = cli.Command{
 		execCommand,
 		startCommand,
 		stateCommand,
-		PullImageCommand,
+		pullImageCommand,
 	},
 }
 
