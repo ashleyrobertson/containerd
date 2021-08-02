@@ -125,7 +125,7 @@ var pullImageCommand = cli.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Image pulled %d\n", r.ExitStatus)
+		// fmt.Printf("Image pulled %d\n", r.ExitStatus)
 		return nil
 	},
 }

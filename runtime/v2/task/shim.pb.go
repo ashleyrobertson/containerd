@@ -326,6 +326,48 @@ func (m *ResizePtyRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ResizePtyRequest proto.InternalMessageInfo
 
+type PullImageRequest struct {
+	ID                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ExecID               string   `protobuf:"bytes,2,opt,name=exec_id,json=execId,proto3" json:"exec_id,omitempty"`
+	Width                uint32   `protobuf:"varint,3,opt,name=width,proto3" json:"width,omitempty"`
+	Height               uint32   `protobuf:"varint,4,opt,name=height,proto3" json:"height,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PullImageRequest) Reset()      { *m = PullImageRequest{} }
+func (*PullImageRequest) ProtoMessage() {}
+func (*PullImageRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9202ee34bc3ad8ca, []int{6}
+}
+func (m *PullImageRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PullImageRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PullImageRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PullImageRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PullImageRequest.Merge(m, src)
+}
+func (m *PullImageRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *PullImageRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_PullImageRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PullImageRequest proto.InternalMessageInfo
+
 type StateRequest struct {
 	ID                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ExecID               string   `protobuf:"bytes,2,opt,name=exec_id,json=execId,proto3" json:"exec_id,omitempty"`
@@ -1101,6 +1143,7 @@ func init() {
 	proto.RegisterType((*ExecProcessRequest)(nil), "containerd.task.v2.ExecProcessRequest")
 	proto.RegisterType((*ExecProcessResponse)(nil), "containerd.task.v2.ExecProcessResponse")
 	proto.RegisterType((*ResizePtyRequest)(nil), "containerd.task.v2.ResizePtyRequest")
+	proto.RegisterType((*PullImageRequest)(nil), "containerd.task.v2.PullImageRequest")
 	proto.RegisterType((*StateRequest)(nil), "containerd.task.v2.StateRequest")
 	proto.RegisterType((*StateResponse)(nil), "containerd.task.v2.StateResponse")
 	proto.RegisterType((*KillRequest)(nil), "containerd.task.v2.KillRequest")
@@ -1604,6 +1647,58 @@ func (m *ResizePtyRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	return len(dAtA) - i, nil
 }
+
+func (m *PullImageRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PullImageRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PullImageRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Height != 0 {
+		i = encodeVarintShim(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Width != 0 {
+		i = encodeVarintShim(dAtA, i, uint64(m.Width))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.ExecID) > 0 {
+		i -= len(m.ExecID)
+		copy(dAtA[i:], m.ExecID)
+		i = encodeVarintShim(dAtA, i, uint64(len(m.ExecID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ID) > 0 {
+		i -= len(m.ID)
+		copy(dAtA[i:], m.ID)
+		i = encodeVarintShim(dAtA, i, uint64(len(m.ID)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 
 func (m *StateRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
@@ -2661,6 +2756,32 @@ func (m *ResizePtyRequest) Size() (n int) {
 	return n
 }
 
+func (m *PullImageRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovShim(uint64(l))
+	}
+	l = len(m.ExecID)
+	if l > 0 {
+		n += 1 + l + sovShim(uint64(l))
+	}
+	if m.Width != 0 {
+		n += 1 + sovShim(uint64(m.Width))
+	}
+	if m.Height != 0 {
+		n += 1 + sovShim(uint64(m.Height))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
 func (m *StateRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -3167,6 +3288,20 @@ func (this *ResizePtyRequest) String() string {
 	}, "")
 	return s
 }
+func (this *PullImageRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&PullImageRequest{`,
+		`ID:` + fmt.Sprintf("%v", this.ID) + `,`,
+		`ExecID:` + fmt.Sprintf("%v", this.ExecID) + `,`,
+		`Width:` + fmt.Sprintf("%v", this.Width) + `,`,
+		`Height:` + fmt.Sprintf("%v", this.Height) + `,`,
+		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
+		`}`,
+	}, "")
+	return s
+}
 func (this *StateRequest) String() string {
 	if this == nil {
 		return "nil"
@@ -3438,6 +3573,7 @@ type TaskService interface {
 	Kill(ctx context.Context, req *KillRequest) (*types1.Empty, error)
 	Exec(ctx context.Context, req *ExecProcessRequest) (*types1.Empty, error)
 	ResizePty(ctx context.Context, req *ResizePtyRequest) (*types1.Empty, error)
+	PullImage(ctx context.Context, req *PullImageRequest) (*types1.Empty, error)
 	CloseIO(ctx context.Context, req *CloseIORequest) (*types1.Empty, error)
 	Update(ctx context.Context, req *UpdateTaskRequest) (*types1.Empty, error)
 	Wait(ctx context.Context, req *WaitRequest) (*WaitResponse, error)
@@ -3524,6 +3660,13 @@ func RegisterTaskService(srv *github_com_containerd_ttrpc.Server, svc TaskServic
 				return nil, err
 			}
 			return svc.ResizePty(ctx, &req)
+		},
+		"PullImage": func(ctx context.Context, unmarshal func(interface{}) error) (interface{}, error) {
+			var req PullImageRequest
+			if err := unmarshal(&req); err != nil {
+				return nil, err
+			}
+			return svc.PullImage(ctx, &req)
 		},
 		"CloseIO": func(ctx context.Context, unmarshal func(interface{}) error) (interface{}, error) {
 			var req CloseIORequest
@@ -3663,6 +3806,14 @@ func (c *taskClient) Exec(ctx context.Context, req *ExecProcessRequest) (*types1
 func (c *taskClient) ResizePty(ctx context.Context, req *ResizePtyRequest) (*types1.Empty, error) {
 	var resp types1.Empty
 	if err := c.client.Call(ctx, "containerd.task.v2.Task", "ResizePty", req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+func (c *taskClient) PullImage(ctx context.Context, req *PullImageRequest) (*types1.Empty, error) {
+	var resp types1.Empty
+	if err := c.client.Call(ctx, "containerd.task.v2.Task", "PullImage", req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -4732,6 +4883,159 @@ func (m *ResizePtyRequest) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: ResizePtyRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowShim
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthShim
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthShim
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExecID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowShim
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthShim
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthShim
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ExecID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Width", wireType)
+			}
+			m.Width = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowShim
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Width |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowShim
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipShim(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthShim
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PullImageRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowShim
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PullImageRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PullImageRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
