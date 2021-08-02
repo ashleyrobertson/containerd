@@ -111,6 +111,25 @@ var deleteCommand = cli.Command{
 	},
 }
 
+var pullImageCommand = cli.Command{
+	Name:  "pullimage",
+	Usage: "pull an image",
+	Action: func(context *cli.Context) error {
+		service, err := getTaskService(context)
+		if err != nil {
+			return err
+		}
+		r, err := service.PullImage(gocontext.Background(), &task.PullImageRequest{
+			ID: context.Args().First(),
+		})
+		if err != nil {
+			return err
+		}
+		fmt.Printf("Image pulled %d\n", r.ExitStatus)
+		return nil
+	},
+}
+
 var stateCommand = cli.Command{
 	Name:  "state",
 	Usage: "get the state of all the processes of the task",
