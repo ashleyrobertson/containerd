@@ -119,7 +119,7 @@ var pullImageCommand = cli.Command{
 		if err != nil {
 			return err
 		}
-		_, err := service.PullImage(gocontext.Background(), &task.PullImageRequest{
+		_, err = service.PullImage(gocontext.Background(), &task.PullImageRequest{
 			ID: context.Args().First(),
 		})
 		if err != nil {
