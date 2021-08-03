@@ -3814,8 +3814,8 @@ func (c *taskClient) ResizePty(ctx context.Context, req *ResizePtyRequest) (*typ
 
 func (c *taskClient) PullImage(ctx context.Context, req *PullImageRequest) (*types1.Empty, error) {
 	var resp types1.Empty
-	fmt.Printf("From the shim2")
 	if err := c.client.Call(ctx, "containerd.task.v2.Task", "PullImage", req, &resp); err != nil {
+		fmt.Printf("Error in the shim here")
 		return nil, err
 	}
 	return &resp, nil
