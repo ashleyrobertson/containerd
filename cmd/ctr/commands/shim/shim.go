@@ -124,7 +124,7 @@ var pullImageCommand = cli.Command{
 			ID: context.Args().First(),
 		})
 		if err != nil {
-			fmt.Printf("Error from ctr cmd")
+			fmt.Printf("Error from ctr cmd %d\n", service)
 			return err
 		}
 		// fmt.Printf("Image pulled %d\n", r.ExitStatus)
