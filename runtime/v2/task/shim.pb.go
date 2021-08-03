@@ -3662,6 +3662,7 @@ func RegisterTaskService(srv *github_com_containerd_ttrpc.Server, svc TaskServic
 			return svc.ResizePty(ctx, &req)
 		},
 		"PullImage": func(ctx context.Context, unmarshal func(interface{}) error) (interface{}, error) {
+			fmt.Printf("From the shim1")
 			var req PullImageRequest
 			if err := unmarshal(&req); err != nil {
 				return nil, err
@@ -3813,6 +3814,7 @@ func (c *taskClient) ResizePty(ctx context.Context, req *ResizePtyRequest) (*typ
 
 func (c *taskClient) PullImage(ctx context.Context, req *PullImageRequest) (*types1.Empty, error) {
 	var resp types1.Empty
+	fmt.Printf("From the shim2")
 	if err := c.client.Call(ctx, "containerd.task.v2.Task", "PullImage", req, &resp); err != nil {
 		return nil, err
 	}
