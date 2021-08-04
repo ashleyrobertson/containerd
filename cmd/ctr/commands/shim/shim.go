@@ -121,7 +121,7 @@ var pullImageCommand = cli.Command{
 			return err
 		}
 		_, err = service.PullImage(gocontext.Background(), &task.PullImageRequest{
-			ID: context.Args().First(),
+			ID: context.GlobalString("id"),
 		})
 		if err != nil {
 			fmt.Printf("Error from ctr cmd %d\n", service)
