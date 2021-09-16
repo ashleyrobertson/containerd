@@ -603,6 +603,11 @@ func (l *local) Wait(ctx context.Context, r *api.WaitRequest, _ ...grpc.CallOpti
 	}, nil
 }
 
+//***PLACEHOLDER
+func (l *local) PullImage(ctx context.Context, r *api.PullImageRequest, _ ...grpc.CallOption) (*ptypes.Empty, error) {
+	return empty, nil
+}
+
 func getTasksMetrics(ctx context.Context, filter filters.Filter, tasks []runtime.Task, r *api.MetricsResponse) {
 	for _, tk := range tasks {
 		if !filter.Match(filters.AdapterFunc(func(fieldpath []string) (string, bool) {

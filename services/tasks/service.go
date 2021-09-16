@@ -132,3 +132,8 @@ func (s *service) Metrics(ctx context.Context, r *api.MetricsRequest) (*api.Metr
 func (s *service) Wait(ctx context.Context, r *api.WaitRequest) (*api.WaitResponse, error) {
 	return s.local.Wait(ctx, r)
 }
+
+//***PLACEHOLDER
+func (s *service) PullImage(ctx context.Context, r *api.PullImageRequest) (*ptypes.Empty, error) {
+	return s.local.PullImage(ctx, r)
+}

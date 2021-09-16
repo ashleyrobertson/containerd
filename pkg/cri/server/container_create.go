@@ -102,6 +102,13 @@ func (c *criService) CreateContainer(ctx context.Context, r *runtime.CreateConta
 		return nil, errors.Wrapf(err, "failed to get image from containerd %q", image.ID)
 	}
 
+	// POC - pull image in sandbox
+	log.G(ctx).Debugf("pulling image in sandbox")
+	err = sandbox.Container.PullImage(ctx, sandboxID, containerdImage.Name())
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to pull image for sandbox %q", sandboxID)
+	}
+
 	// Run container using the same runtime with sandbox.
 	sandboxInfo, err := sandbox.Container.Info(ctx)
 	if err != nil {

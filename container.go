@@ -19,6 +19,8 @@ package containerd
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,6 +28,11 @@ import (
 	"github.com/containerd/containerd/api/services/tasks/v1"
 	"github.com/containerd/containerd/api/types"
 	tasktypes "github.com/containerd/containerd/api/types/task"
+	"github.com/containerd/ttrpc"
+	taskv2 "github.com/containerd/containerd/runtime/v2/task"
+	shim "github.com/containerd/containerd/runtime/v2/shim"
+	"github.com/containerd/containerd/namespaces"
+	"github.com/containerd/containerd/pkg/cri/constants"
 	"github.com/containerd/containerd/cio"
 	"github.com/containerd/containerd/containers"
 	"github.com/containerd/containerd/errdefs"
@@ -51,6 +58,7 @@ const (
 type Container interface {
 	// ID identifies the container
 	ID() string
+	Client () *Client
 	// Info returns the underlying container record type
 	Info(context.Context, ...InfoOpts) (containers.Container, error)
 	// Delete removes the container
@@ -79,6 +87,8 @@ type Container interface {
 	Update(context.Context, ...UpdateContainerOpts) error
 	// Checkpoint creates a checkpoint image of the current container
 	Checkpoint(context.Context, string, ...CheckpointOpts) (Image, error)
+	// Pull Image in container
+	PullImage(context.Context, string, string) error
 }
 
 func containerFromRecord(client *Client, c containers.Container) *container {
@@ -100,6 +110,10 @@ type container struct {
 // ID returns the container's unique id
 func (c *container) ID() string {
 	return c.id
+}
+
+func (c *container) Client() *Client {
+	return c.client
 }
 
 func (c *container) Info(ctx context.Context, opts ...InfoOpts) (containers.Container, error) {
@@ -382,6 +396,51 @@ func (c *container) Checkpoint(ctx context.Context, ref string, opts ...Checkpoi
 	}
 
 	return NewImage(c.client, checkpoint), nil
+}
+
+func (c *container) PullImage(ctx context.Context, id string, image string) error {
+	service, err := getTaskService(id)
+	if err != nil {
+		return err
+	}
+
+	_, err2 := service.PullImage(ctx, &taskv2.PullImageRequest{
+		ID: id,
+		Image: image,
+	})
+	if err2 != nil {
+		return err
+	}
+	
+	return nil
+}
+
+func getTaskService(id string) (taskv2.TaskService, error) {
+	if id == "" {
+		return nil, fmt.Errorf("container id must be specified")
+	}
+
+	// /containerd-shim/ns/id/shim.sock is the old way to generate shim socket,
+	// compatible it
+	s1 := filepath.Join(string(filepath.Separator), "containerd-shim", constants.K8sContainerdNamespace, id, "shim.sock")
+	// this should not error, ctr always get a default ns
+	ctx := namespaces.WithNamespace(context.Background(), constants.K8sContainerdNamespace)
+	s2, _ := shim.SocketAddress(ctx, "unix:///run/containerd/containerd.sock", id)
+	s2 = strings.TrimPrefix(s2, "unix://")
+
+	for _, socket := range []string{s2, "\x00" + s1} {
+		conn, err := net.Dial("unix", socket)
+		if err == nil {
+			client := ttrpc.NewClient(conn)
+
+			// TODO(stevvooe): This actually leaks the connection. We were leaking it
+			// before, so may not be a huge deal.
+
+			return taskv2.NewTaskClient(client), nil
+		}
+	}
+
+	return nil, fmt.Errorf("fail to connect to container %s's shim", id)
 }
 
 func (c *container) loadTask(ctx context.Context, ioAttach cio.Attach) (Task, error) {
